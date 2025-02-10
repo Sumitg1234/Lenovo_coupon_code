@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel - Coupon Website</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <h1>Admin Panel</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="admin.html">Admin Panel</a>
+    </nav>
+  </header>
+  <main>
+    <h2>Add a New Coupon</h2>
+    <form id="coupon-form">
+      <label for="store">Store Name:</label><br>
+      <input type="text" id="store" name="store" required><br>
+      <label for="code">Coupon Code:</label><br>
+      <input type="text" id="code" name="code" required><br>
+      <label for="link">Coupon Link:</label><br>
+      <input type="url" id="link" name="link" required><br><br>
+      <button type="submit">Add Coupon</button>
+    </form>
+    <div id="message"></div>
+  </main>
+  <script>
+    // Use the same Web App URL for POST (adding coupons)
+    const writeURL = 'https://script.google.com/macros/s/AKfycbzJKmFQj0wIUpchpI1OYiaIgKRivR2yzAWu2Y6mf-KUMT9g9I4KUyETVWpO26ZPVEAGcw/exec';
+
+    document.getElementById('coupon-form').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const store = document.getElementById('store').value;
+      const code = document.getElementById('code').value;
+      const link = document.getElementById('link').value;
+
+      const data = { store, code, link };
+
+      try {
+        const response = await fetch(writeURL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        });
+        const result = await response.json();
+        document.getElementById('message').innerText = result.status || result.error;
+        document.getElementById('coupon-form').reset();
+      } catch (error) {
+        console.error('Error adding coupon:', error);
+        document.getElementById('message').innerText = 'Error adding coupon.';
+      }
+    });
+  </script>
+</body>
+</html>

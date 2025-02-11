@@ -15,46 +15,56 @@
     </nav>
   </header>
   <main>
-    <h2>Add a New Coupon</h2>
-    <form id="coupon-form">
-      <label for="store">Store Name:</label><br>
-      <input type="text" id="store" name="store" required><br>
-      <label for="code">Coupon Code:</label><br>
-      <input type="text" id="code" name="code" required><br>
-      <label for="link">Coupon Link:</label><br>
-      <input type="url" id="link" name="link" required><br><br>
-      <button type="submit">Add Coupon</button>
-    </form>
-    <div id="message"></div>
-  </main>
-  <script>
-    // Use the same Web App URL for POST (adding coupons)
-    const writeURL = 'https://script.google.com/macros/s/AKfycbzJKmFQj0wIUpchpI1OYiaIgKRivR2yzAWu2Y6mf-KUMT9g9I4KUyETVWpO26ZPVEAGcw/exec';
+  <h2>Add a New Coupon</h2>
+<form id="coupon-form">
+  <label for="store">Store Name:</label><br>
+  <input type="text" id="store" name="store" required><br><br>
+  <label for="code">Coupon Code:</label><br>
+  <input type="text" id="code" name="code" required><br><br>
+  <label for="link">Coupon Link:</label><br>
+  <input type="url" id="link" name="link" required><br><br>
+  <button type="submit">Add Coupon</button>
+</form>
+<div id="message"></div>
 
-    document.getElementById('coupon-form').addEventListener('submit', async function(e) {
-      e.preventDefault();
-      const store = document.getElementById('store').value;
-      const code = document.getElementById('code').value;
-      const link = document.getElementById('link').value;
+<script>
+  // Use the correct Web App URL for your Google Apps Script deployment
+  const writeURL = 'https://script.google.com/macros/s/AKfycbzJKmFQj0wIUpchpI1OYiaIgKRivR2yzAWu2Y6mf-KUMT9g9I4KUyETVWpO26ZPVEAGcw/exec';
 
-      const data = { store, code, link };
+  document.getElementById('coupon-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    console.log("Form submitted.");
 
-      try {
-        const response = await fetch(writeURL, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(data)
-        });
-        const result = await response.json();
-        document.getElementById('message').innerText = result.status || result.error;
-        document.getElementById('coupon-form').reset();
-      } catch (error) {
-        console.error('Error adding coupon:', error);
-        document.getElementById('message').innerText = 'Error adding coupon.';
+    const store = document.getElementById('store').value;
+    const code = document.getElementById('code').value;
+    const link = document.getElementById('link').value;
+    
+    const data = { store, code, link };
+    console.log("Data to send:", data);
+
+    try {
+      const response = await fetch(writeURL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      });
+
+      if (!response.ok) {
+        throw new Error("Network response was not OK");
       }
-    });
-  </script>
+
+      const result = await response.json();
+      console.log("Response received:", result);
+      document.getElementById('message').innerText = result.status || result.error;
+      document.getElementById('coupon-form').reset();
+    } catch (error) {
+      console.error('Error adding coupon:', error);
+      document.getElementById('message').innerText = 'Error adding coupon.';
+    }
+  });
+</script>
+
 </body>
 </html>
